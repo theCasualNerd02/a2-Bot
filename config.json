@@ -1,9 +1,11 @@
 {
     "prefix" : "!a2",
     "token" : "NzMzNjcwOTIwNDU0OTMwNTA0.XxGi5w.vDLjnpAmiYdmwaItrQCEw5RX9Pg",
-    "pipe-Name" : "a2-pipe",
+    "inPipe-Name" : "/tmp/VII-Untitled-slot3/IN",
+    "outPipe-Name" : "/tmp/VII-Untitled-slot3/OUT",
+    "channel" : "general",
     "bot_info" : {
         "name" : "a2-bot",
-        "version" : 1.0
+        "version" : "1.0"
     }
 }
