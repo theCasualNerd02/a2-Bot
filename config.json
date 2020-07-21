@@ -1,9 +1,12 @@
 {
     "prefix" : "!a2",
     "token" : "NzMzNjcwOTIwNDU0OTMwNTA0.XxGi5w.vDLjnpAmiYdmwaItrQCEw5RX9Pg",
-    "inPipe-Name" : "/tmp/VII-Untitled-slot3/IN",
-    "outPipe-Name" : "/tmp/VII-Untitled-slot3/OUT",
-    "channel" : "general",
+    "inPipe-Name" : "/tmp/VII-Untitled-slot7/IN",
+    "outPipe-Name" : "/tmp/VII-Untitled-slot7/OUT",
+    "_inPipe-Name" : "/tmp/VII-DevApple.vii-slot7/IN",
+    "_outPipe-Name" : "/tmp/VII-DevApple.vii-slot7/OUT",
+    "__inPipe-Name" : "/dev/cu.usbserial",
+    "__outPipe-Name" : "/dev/cu.usbserial",
     "bot_info" : {
         "name" : "a2-bot",
         "version" : "1.0"
