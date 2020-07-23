@@ -118,6 +118,7 @@ client.on('message', message => {
             message.channel.send('- use "!a2 char " followed by a single character to send only that character to the apple ][');
             message.channel.send('warning: it is not possible to send ^c through a super serial card so please try to avoid causing an unbreakable infinite loop');
             message.channel.send('In the event of an infinite loop contact the controler of the emulator or apple ][ for them to break the loop and contact a mod to mute the bot if it is sending continual messages')
+            message.channel.send('use "!a2 type pr#6" to play a game of The Wounderful World Of Eamon');
     }
     else if (message.content.startsWith(config.prefix + ' type ') && !message.author.bot){ // waits for !a2 type to be the start of a message it didn't send
         let input = message.toString();
