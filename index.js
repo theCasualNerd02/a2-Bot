@@ -1,5 +1,8 @@
+//A2-Bot
+//Written by Matthew Rand
+//From Rand-dom Software
 // to do
-//make running disks work (goal is to play text adventure), make larger message not loose data, make ^c work, !a2 key, !a2 text, and other ideas
+//edit an eamon game to work through this code
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -9,7 +12,6 @@ const { strict } = require('assert');
 const { isNull } = require('util');
 const { count } = require('console');
 
-//innitalize inFd and outFd
 var inFd;
 var outputBuffer = Buffer.alloc(1024);
 var numOutputBytes = 0;
@@ -19,9 +21,7 @@ var outputString = '```';
 var timeOutFlush;
 
 function writeToPipe(inputBuffer){
-    console.log(config["inPipe-Name"]);
     fs.write(inFd, inputBuffer, (err, bytesWritten, buffer) => {
-        console.log(bytesWritten);
         fs.fsync(inFd, () => {});
     })
 }
@@ -63,7 +63,6 @@ function flushOutput(){
         outputString += '```';
         outputString = outputString.replace('``````', '');//if there are only ticks delete the contents
         if (outputString != '') channel.send(outputString);
-        else console.log('message is empty');
         outputString = '';
         outputString += '```';
     }
@@ -78,16 +77,13 @@ client.once('ready', () => {
     readStream = fs.createReadStream(config["outPipe-Name"]);
     readStream.on('data', buffer => {
         var counter;
-        console.log(buffer.join());
         for (counter = 0; counter < buffer.length; counter++){//for every char in the string
             var charCode = (buffer[counter] & 127);
             if (charCode == 7) {//code not entering if **
-                console.log('BEEP detected');
                 //charCode = 0b10001100011; // if the character is the beep noise replace it with the "bell" emoji
                 outputString += String.fromCodePoint(0x1F514);
             }
-            if(charCode == 0b1101){//0b1101 is 13 in binary which is the value for return/newline http://www.virtualii.com/VirtualIIHelp/virtual_II_help.html 
-                console.log(outputString);
+            if(charCode == 0b1101){//0b1101 is 13 in binary which is the value for return/newline
                 if(channel == null){
                     console.log('channel is null');
                 }
@@ -96,7 +92,6 @@ client.once('ready', () => {
                     outputString += '```';
                     outputString = outputString.replace('``````', '');//if there are only ticks delete the contents
                     if (outputString != '') channel.send(outputString);
-                    else console.log('message is empty');
                     outputString = '';
                     outputString += '```';
                 }
@@ -119,31 +114,22 @@ client.on('message', message => {
     channel = message.channel;
     if (message.content == '!a2 help'){
             message.channel.send('- use "!a2 help" to display this message');
-            message.channel.send('- use the prefix !a2 followed by basic code to run the code through an apple ][ emulator');
-            message.channel.send('- use k(command) to use a key not type-able through discord. Fill in command with one of esc, up, down, left, right.');
-            message.channel.send('- use "!a2 ^c" to break the code in case of an infinite loop');
+            message.channel.send('- use "!a2 type " followed by basic commands to run that message through an apple ][');
+            message.channel.send('- use "!a2 char " followed by a single character to send only that character to the apple ][');
+            message.channel.send('warning: it is not possible to send ^c through a super serial card so please try to avoid causing an unbreakable infinite loop');
+            message.channel.send('In the event of an infinite loop contact the controler of the emulator or apple ][ for them to break the loop and contact a mod to mute the bot if it is sending continual messages')
     }
-    else if (message.content == '!a2 ^c'){
-        input = String.fromCharCode(0b11);//input is equal to ^c
-        var buffer = Buffer.alloc(1);
-        buffer[0] = 131;
-        writeToPipe(buffer);
-        //bits are being send but the system isn't recignising it **
-    }
-    else if (message.content.startsWith(config.prefix) && !message.author.bot){ // waits for !a2 to be the start of a message it didn't send
+    else if (message.content.startsWith(config.prefix + ' type ') && !message.author.bot){ // waits for !a2 type to be the start of a message it didn't send
         let input = message.toString();
-        console.log(input)
-        input = input.replace('!a2 ' , '');// removes the prefix before editing input to but put through virtual ][]
-        input = input.replace('!a2' , '');//removes prefix if there is no space after the prefix
-        input = input.replace('k(esc)', String.fromCharCode(0b11011));
-        /*start of arrow key codes (currently abandoned)
-        input = input.replace('k(up)', );
-        input = input.replace('k(down)', );
-        input = input.replace('k(left)', );
-        input = input.replace('k(right)', );
-        */
+        input = input.replace('!a2 type ' , '');// removes the prefix before editing input to but put through virtual ][
         setHighBit(input); //sets high bit so that text can be interpreted by the emulator
 
     }
-    
+    else if (message.content.startsWith(config.prefix + ' char ') && !message.author.bot){
+        let input = message.toString();
+        var inputBuffer = Buffer.alloc(1);
+        input = input.replace(config.prefix + ' char ', '');
+        inputBuffer[0] = (input.charCodeAt(0) | 128);//inputBuffer is equal to the character set with the high bit set
+        writeToPipe(inputBuffer);
+    }
 }); 
